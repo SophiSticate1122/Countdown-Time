@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        body {
+            background-color: black;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            overflow: hidden;
+            color: white;
+            font-family: Arial, sans-serif;
+        }
+
+        .neon-text {
+            font-size: 3em;
+            text-align: center;
+            position: relative;
+            animation: neon-flash 1s infinite alternate;
+        }
+
+        .highlight {
+            font-size: 2em; /* Double the size */
+            font-weight: bold;
+            font-style: italic;
+            font-family: 'Lucida Handwriting', cursive;
+            background: linear-gradient(45deg, red, orange, yellow, green, cyan, blue, violet);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: color-cycle 2s infinite;
+        }
+
+        @keyframes color-cycle {
+            0% { background-position: 0%; }
+            100% { background-position: 100%; }
+        }
+
+        #countdown {
+            font-size: 4em;
+            color: magenta;
+            animation: pulse 1s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.2); }
+            100% { transform: scale(1); }
+        }
+
+        @keyframes neon-flash {
+            from {
+                text-shadow: 0 0 10px cyan, 0 0 20px cyan, 0 0 30px cyan, 0 0 40px cyan;
+            }
+            to {
+                text-shadow: 0 0 20px cyan, 0 0 30px cyan, 0 0 40px cyan, 0 0 50px cyan;
+            }
+        }
+
+        .confetti {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            background-color: yellow;
+            animation: fall linear infinite;
+        }
+
+        @keyframes fall {
+            0% {
+                transform: translateY(0) translateX(0);
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(100vh) translateX(calc(100vw - 50vw));
+                opacity: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="neon-text" id="main-text">
+        The Inauguration of <span class="highlight">Donald J Trump</span>, 47th President of the USA!!
+    </div>
+    <div id="countdown">Loading...</div>
+
+    <script>
+        // Countdown logic
+        const targetDate = new Date('2025-01-20T12:00:00').getTime();
+
+        function updateCountdown() {
+            const now = new Date().getTime();
+            const distance = targetDate - now;
+
+            if (distance <= 0) {
+                document.getElementById('countdown').textContent = "The Moment is Here!";
+                clearInterval(countdownInterval);
+                return;
+            }
+
+            const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+
+            // Update the countdown text
+            document.getElementById('countdown').textContent = `${days}d ${hours}h ${minutes}m`;
+        }
+
+        // Update countdown every second
+        const countdownInterval = setInterval(updateCountdown, 1000);
+
+        // Initial call to show countdown immediately
+        updateCountdown();
+
+        // Confetti effect
+        function createConfetti() {
+            const mainText = document.getElementById("main-text");
+            const textRect = mainText.getBoundingClientRect();
+
+            for (let i = 0; i < 100; i++) {
+                const confetti = document.createElement('div');
+                confetti.classList.add('confetti');
+                confetti.style.left = `${textRect.left + Math.random() * textRect.width}px`;
+                confetti.style.top = `${textRect.top + Math.random() * textRect.height}px`;
+                confetti.style.animationDuration = `${Math.random() * 3 + 2}s`;
+                confetti.style.backgroundColor = `hsl(${Math.random() * 360}, 100%, 50%)`;
+                document.body.appendChild(confetti);
+
+                setTimeout(() => confetti.remove(), 5000);
+            }
+        }
+
+        // Trigger confetti every 5 seconds
+        setInterval(createConfetti, 5000);
+
+        // Initial confetti burst
+        createConfetti();
+    </script>
+</body>
+</html>
